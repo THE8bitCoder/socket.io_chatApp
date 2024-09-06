@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" media="screen and (max-width: 395px) and (min-width: 100px)" href="phone.css">
+    <title>chat-app</title>
+</head>
+<body>
+    
+    <nav>
+        <img src="logo.png" id="logo" alt="logo..">
+        <h1>Welcome to iChat app made by Vikram</h1>
+    </nav>
+
+        <div class="container">
+        </div>
+
+        <div class="send">
+            <form action="#", id="send-container">
+                <input type="text" name="messageInp" id="messageInp">
+                <button type="submit" id="btn">Send</button>
+            </form>
+        </div>
+
+    <script>
+        const socket = io();
+        
+        const form = document.getElementById('send-container');
+        const messageInput = document.getElementById('messageInp');
+        const messageContainer = document.querySelector('.container')
+        var audio = new Audio('ding.mp3');
+        const name = prompt("Enter your name to join");
+        socket.emit('new-user-joined', name);
+
+        const append = (message, position)=>{
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+    messageElement.classList.add(position);
+
+    // Check if it's a regular message (send or receive)
+    if (position === 'left' || position === 'right') {
+        const [namePart, messagePart] = message.split(':'); // Split the message into name and message text
+        const nameSpan = document.createElement('span');
+        nameSpan.innerHTML = `<b>${namePart}</b>`; // Wrap the name in <b> tags to make it bold
+        const messageSpan = document.createElement('span');
+        messageSpan.textContent = messagePart;
+        messageElement.appendChild(nameSpan);
+        messageElement.appendChild(document.createTextNode(': ')); // Add a colon and space
+        messageElement.appendChild(messageSpan);
+    } else {
+        // If it's a join or leave message, display it as is
+        messageElement.textContent = message;
+    }
+
+    // Append the message element to the container
+    messageContainer.append(messageElement);
+
+    if (position == 'left'){
+        audio.play();
+    }
+}
+
+
+        // const append = (message, position)=>{
+        //     const messageElement = document.createElement('div');
+        //     messageElement.innerText = message;
+        //     messageElement.classList.add('message');
+        //     messageElement.classList.add(position);
+        //     messageContainer.append(messageElement);
+        //     if (position == 'left'){
+        //         audio.play();
+        //     }
+        // }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const message = messageInput.value;
+            append(`You: ${message}`, 'right');
+            socket.emit('send', message);
+            messageInput.value = "";
+        })
+
+        socket.on('user-joined', name => {
+            append(`${name} joined the chat`, 'right');
+        })
+
+        socket.on('receive', data => {
+            append(`${data.name}: ${data.message}`, 'left')
+        })
+
+        socket.on('leave', name => {
+            append(`${name} left the chat`, 'left');
+        })
+
+    </script>
+</body>
+</html>

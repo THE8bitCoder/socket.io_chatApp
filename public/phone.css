@@ -1,0 +1,43 @@
+
+    nav h1 {
+        display: block;
+        text-align: center;
+        padding: 10px 20px;
+        color: white;
+        font-size: 30px;
+    }
+
+    .container {
+        background-color: rgba(0, 0, 0, 0.535);
+        border: 3px solid white;
+        border-radius: 12px;
+        width: 70vw;
+        height: 50vh;
+        margin: auto;
+        overflow-y: scroll;
+    }
+
+    #send-container{
+        display: block;
+        position: absolute;
+        top: 71%;
+        left: 8%;
+        margin: 5px;
+    }
+
+    #messageInp{
+        border: 2px solid black;
+        border-radius: 12px;
+        padding: 2px;
+        width: 260px;
+        font-size: 16px;
+    }
+
+    #btn{
+        font-size: 16px;
+        padding: 3px 5px;
+        font-weight: bold;
+        border: 2px solid black;
+        border-radius: 8px;
+        cursor: pointer;
+    }
